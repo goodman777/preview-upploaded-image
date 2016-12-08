@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    	canvas {
+    		border: 1px solid #000;
+    	}
+    	img{
+    		display:block;
+    		border: 1px solid #000;
+    	}
+    	.box1{
+    		float:left;
+    		width:400px;
+    		height:400px;
+    	}
+    	.box2 {
+			float:right;
+			width:600px;
+			height:400px;
+    	}
+    </style>
+</head>
+    <body>
+    	<div class='box1'>
+    		<input type="file" id='file'><br>
+        	<img src="" height="300" width="300" alt="" id="img"><br>
+    	</div>
+        	
+        <div class='box2'>
+        	<video src="" id='video' width='300'height='300'></video>
+        	<canvas width="100" height="100"></canvas>
+        	<button >拍照预览</button>
+        </div>
+        
+    </body>
+    <script>
+    var fileObj=document.getElementById("file");
+    var img=document.getElementById("img");
+    var video=document.getElementById('video');
+    var button=document.getElementsByTagName('button')[0];
+    var canvas=document.getElementsByTagName('canvas')[0];
+    var cts=canvas.getContext("2d");
+    //上传图片预览
+    fileObj.onchange=function(){
+        var src = window.URL.createObjectURL(fileObj.files[0]);
+        console.log(fileObj.files);
+        console.log(src);
+        img.src=src;
+    }
+
+
+    //兼容写法
+    function GetUserMedia(obj,fn1,fn2){
+    	if(navigator.getUserMedia){
+    		return navigator.getUserMedia(obj,fn1,fn2)
+    	}
+    	else if(navigator.webkitGetUserMedia){
+    		return navigator.webkitGetUserMedia(obj,fn1,fn2)
+    	}
+    	else if(navigator.mozGetUserMedia){
+			return navigator.mozGetUserMedia(obj,fn1,fn2);
+    	}
+    	else{
+    		alert("don't support");
+    	}
+    }
+    //canvas获取video图片
+    var p = GetUserMedia({  video: true },function(mediaStream) {
+  
+        video.src = window.URL.createObjectURL(mediaStream);        
+        video.onloadedmetadata = function(e) {
+        video.play();
+      };
+    },function(err){console.log(err)});
+      button.onclick=function(){
+        cts.drawImage(video,0,0,100,100);
+    }
+
+    </script>
+</html>
